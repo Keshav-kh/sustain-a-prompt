@@ -1,153 +1,134 @@
-Here’s the improved README in plain copy-ready text:
+SUSTAIN-A-PROMPT (PennApps XXVI)
+=================================
+Because every prompt has a footprint.
 
-```
-# 🌱 Sustain-A-Prompt
+WHAT IS THIS
+------------
+Sustain-A-Prompt is an eco‑aware prompt optimizer. You paste a prompt, we estimate its
+energy, CO2, and water impact, suggest a leaner alternative with projected savings,
+and render a clean, copy‑paste‑ready answer (sanitized to remove boilerplate).
 
-*Because every keystroke has a footprint.*  
-An eco-aware **prompt optimizer** built at **PennApps XXVI** with **Next.js 15, TypeScript, Tailwind v4, and shadcn/ui**.  
+WHY IT MATTERS
+--------------
+Generative AI has a real environmental cost. Sustain-A-Prompt makes that cost visible,
+then helps you lower it—without sacrificing answer quality.
 
-👉 Enter a prompt → we estimate **energy ⚡ / CO₂ 🌍 / water 💧** impact → we generate an optimized prompt with projected savings → and render a clean, copy-paste-ready answer (thanks to our regex-powered sanitizer).
+HIGHLIGHTS
+----------
+- Optimized prompting with percent savings shown alongside the original.
+- Environmental metrics: energy (Wh/kWh), CO2 (g), and water (L).
+- Clean output: regex sanitizer removes disclaimers, code fences, blockquotes, and noisy citations.
+- Futuristic but usable UI: dark glassmorphism with subtle neon accents.
+- Modern architecture: Next.js App Router with a safe server/client split.
+- Auth-ready routes for login/register, toast notifications, and header actions.
 
----
+TECH STACK
+----------
+- Framework: Next.js 15 (App Router, React Server Components), TypeScript
+- UI: Tailwind CSS v4, shadcn/ui, lucide-react, Sonner (toasts)
+- Animations: framer-motion, @motionone/react
+- APIs: Google Gemini (optimize), Cerebras (chat/models)
 
-## ✨ Why it’s cool
-- **Optimized Prompting:** Get a leaner, greener prompt with % savings shown right up front.  
-- **Eco Stats You Can Flex:** Glowing metric cards display your energy, CO₂, and water footprint.  
-- **No AI Clutter:** Regex sanitizer scrubs disclaimers, fences, and markdown noise.  
-- **Cyberpunk Vibes:** Dark glassmorphism, neon accents (aqua/green/violet), and smooth animations.  
-- **Modern Architecture:** Next.js App Router split (server + client), safe for RSC.  
-- **Auth-Ready:** Login/Register routes, toast feedback, and header actions built-in.  
+IMPORTANT NOTE
+--------------
+styled-jsx is NOT used. In Next 15 it will break builds. Use Tailwind-only styling.
 
----
+HOW IT WORKS
+------------
+1) You enter a prompt in the chat-style console.
+2) Backend estimates footprint (energy, CO2, water).
+3) UI shows glowing metric cards and proposes an optimized prompt.
+4) The model response is sanitized and displayed in the main answer panel.
 
-## 🛠️ Tech Stack
-- **Framework:** Next.js 15 (App Router, RSC), TypeScript  
-- **UI:** Tailwind CSS v4, shadcn/ui, lucide-react, Sonner toasts  
-- **Animations:** framer-motion, @motionone/react  
-- **APIs:** Google Gemini (prompt optimization), Cerebras (chat/models)  
+REPOSITORY LAYOUT (KEY PATHS)
+-----------------------------
+src/app/
+  page.tsx               -> Server Component that renders HomeClient with Suspense
+  layout.tsx             -> Global styles, header, Toaster
+  api/
+    gemini/optimize      -> Prompt optimization endpoint
+    cerebras/chat        -> Chat endpoint
+    cerebras/models      -> Model list endpoint
+  login/, register/      -> Auth pages
 
-⚠️ *Note:* **styled-jsx** will break builds in Next 15. Stick with Tailwind.
+src/components/
+  OptimizedPrompt.tsx    -> Main prompt/answer UI + regex sanitizer
+  ui/                    -> shadcn/ui components and toaster
 
----
+src/lib/, src/hooks/     -> Utilities and hooks
+src/db/ (optional)       -> Drizzle/Turso schema and seed files
 
-## 🔄 How It Works
-1. You drop in a prompt (chat-style console).  
-2. Backend estimates its **energy, CO₂, and water** footprint.  
-3. UI glows with eco stats + suggests a greener prompt.  
-4. Response is sanitized → clean, readable answer box.  
+FEATURES IN DETAIL
+------------------
+Regex Sanitizer
+  - Strips fillers/disclaimers, code fences, blockquotes, [#]-style citations.
+  - Normalizes bullets/headings; preserves line breaks (whitespace-pre-wrap).
+  - Falls back to original if sanitization removes too much.
 
----
+Server/Client Split
+  - Home page is a Server Component (stable SSR/RSC).
+  - Interactive logic lives in a Client Component (HomeClient).
 
-## 📂 Repo Tour
-```
+Design System
+  - Neon glassmorphism, animated gradients, subtle cyber-grid utilities in globals.css.
+  - Tailwind v4 @theme ensures consistent tokens.
 
-src/app
-├─ page.tsx        → Server Component (renders HomeClient w/ Suspense)
-├─ layout.tsx      → Global styles, header, toaster
-├─ api/
-│   ├─ gemini/optimize   → Prompt optimization endpoints
-│   ├─ cerebras/chat     → Chat with Cerebras
-│   └─ cerebras/models   → Model list
-├─ login/, register/     → Auth pages
+GETTING STARTED
+---------------
+Requirements: Node 18+, npm (or bun/pnpm if you adjust scripts).
 
-src/components
-├─ OptimizedPrompt.tsx   → Main UI + regex sanitizer
-└─ ui/                   → shadcn/ui components + Sonner toaster
+Install dependencies:
+  npm install
 
-src/lib, src/hooks          → Utilities & hooks
-src/db (optional)           → Drizzle/Turso setup
+Run the dev server:
+  npm run dev
 
-````
+Build and start:
+  npm run build
+  npm run start
 
----
+ENVIRONMENT VARIABLES
+---------------------
+Create a .env file in the repo root. Only include variables you actively use.
 
-## 🧩 Feature Deep-Dive
-- **Regex Sanitizer:**  
-  Strips out filler, fences, and citations. Normalizes bullets/headings. Keeps line breaks. If sanitization wipes too much, it falls back gracefully.  
+Common keys (examples):
+  GOOGLE_GEMINI_API_KEY=your_key_here
+  CEREBRAS_API_KEY=your_key_here
+  # Add auth provider variables if enabling full auth flows
 
-- **Server/Client Split:**  
-  Home page = Server Component (SSR/RSC stable). Interactive magic = `HomeClient`.  
+Never commit real keys.
 
-- **Design System:**  
-  Neon glassmorphism, animated gradients, and cyber-grid vibes (`globals.css`). Tailwind v4 `@theme` for consistent tokens.  
+API ENDPOINTS (OVERVIEW)
+------------------------
+POST /api/gemini/optimize   -> returns optimized prompt and savings estimates
+POST /api/cerebras/chat     -> chat with a selected model
+GET  /api/cerebras/models   -> list available models
 
----
+Keep calls server-side where possible; do not expose secrets in client code.
 
-## 🚀 Getting Started
-**Prereqs:** Node 18+, npm (or bun/pnpm).  
+UI / UX NOTES
+-------------
+- Dark, futuristic aesthetic with smooth but restrained motion.
+- Answer panel preserves line breaks (CSS: whitespace-pre-wrap).
+- Header contains app logo and auth menu.
 
-```bash
-# Install dependencies
-npm install
+CONVENTIONS & GOTCHAS
+---------------------
+- App Router lives under src/app; pages are Server Components by default.
+- Client-only behavior must be inside files marked with "use client".
+- Do not use styled-jsx; rely on Tailwind utilities and component classes.
+- Follow shadcn/ui patterns for buttons, dialogs, inputs; use Sonner for toasts.
 
-# Run dev server
-npm run dev
+CONTRIBUTING
+------------
+- Keep changes focused and incremental.
+- Follow existing TypeScript types and export patterns.
+- UI changes: include screenshots or short clips in PRs for review.
 
-# Build & start
-npm run build
-npm run start
-````
+LICENSE
+-------
+MIT — see LICENSE (or update if your project uses a different license).
 
----
-
-## 🔑 Environment Setup
-
-Create a `.env` at project root with only the keys you actually use:
-
-```
-GOOGLE_GEMINI_API_KEY=your_key_here
-CEREBRAS_API_KEY=your_key_here
-# Auth provider vars if using login/register
-```
-
-⚠️ Never commit real keys.
-
----
-
-## 📡 API Endpoints
-
-* `POST /api/gemini/optimize` → optimized prompt + savings
-* `POST /api/cerebras/chat` → chat with selected model
-* `GET /api/cerebras/models` → list available models
-
-(*Server-side only—don’t leak secrets!*)
-
----
-
-## 🎨 UI/UX Notes
-
-* Tron-like aesthetic: dark glass + neon glow
-* Answer panel respects line breaks (`whitespace-pre-wrap`)
-* Header = logo + auth menu
-
----
-
-## 🧭 Conventions & Gotchas
-
-* Pages default to **Server Components** (under `src/app`).
-* Client-only logic must be wrapped with `"use client"`.
-* Styling = **Tailwind only**, no styled-jsx.
-* For UI: stick to **shadcn/ui** + Sonner patterns.
-
----
-
-## 🤝 Contributing
-
-* Keep PRs small + focused.
-* Follow TypeScript typings & exports.
-* UI changes? Add screenshots in your PR description.
-
----
-
-## 📜 License
-
-MIT – see LICENSE file (or update if your project uses another license).
-
----
-
-⚡ *Built with love, caffeine, and way too many regexes at PennApps XXVI.* 🌍💧
-
-```
-
-Would you like me to also give you an **ASCII banner version** at the very top so it pops instantly on GitHub?
-```
+CREDITS
+-------
+Built at PennApps XXVI with care, caffeine, and careful regex.
