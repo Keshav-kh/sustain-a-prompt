@@ -4,7 +4,7 @@ Because every prompt has a footprint.
 
 WHAT IS THIS
 ------------
-Sustain-A-Prompt is an eco‑aware prompt optimizer. You paste a prompt, we estimate its
+Sustain-A-Prompt is eco‑aware prompt optimizer. You paste a prompt, we estimate its
 energy, CO2, and water impact, suggest a leaner alternative with projected savings,
 and render a clean, copy‑paste‑ready answer (sanitized to remove boilerplate).
 
